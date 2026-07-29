@@ -15,13 +15,25 @@ int precedence(char op)
     return 0;
 }
 
-string fun(string infix)
-{
-    string postfix="";
-    stack<char> st;
 
-    for(char ch : infix)
+string infixToPrefix(string infix)
+{
+    reverse(infix.begin(), infix.end());
+
+    for(int i = 0; i < infix.length(); i++)
     {
+        if(infix[i] == '(')
+            infix[i] = ')';
+        else if(infix[i] == ')')
+            infix[i] = '(';
+    }
+
+
+    stack<char> st;
+    string postfix="";
+    for(int i = 0; i < infix.length(); i++){
+        char ch=infix[i];
+
         if(isalnum(ch))
         {
             postfix += ch;
@@ -48,7 +60,7 @@ string fun(string infix)
         {
             while(!st.empty() &&
                  (precedence(st.top()) > precedence(ch) ||
-                 (precedence(st.top()) == precedence(ch) && ch!='^')))
+                 (precedence(st.top()) == precedence(ch) && ch=='^')))
             {
                 postfix += st.top();
                 st.pop();
@@ -63,7 +75,7 @@ string fun(string infix)
         postfix += st.top();
         st.pop();
     }
-
+    reverse(postfix.begin(), postfix.end());
     return postfix;
 }
 
@@ -74,7 +86,7 @@ int main()
     cout << "Enter any infix expression: ";
     getline(cin,s);
 
-    string output = fun(s);
+    string output = infixToPrefix(s);
 
-    cout << "Postfix Expression: " << output;
+    cout << "Prefix Expression: " << output;
 }
